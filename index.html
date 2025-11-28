@@ -7,8 +7,8 @@
 
     <!-- Leaflet & MarkerCluster 样式 -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
 
     <!-- 赛博风主题变量 -->
     <style>
@@ -48,7 +48,7 @@
             padding: 30px;
             min-height: 100vh;
             box-sizing: border-box;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.08) 0%, transparent 25%),
                 radial-gradient(circle at 85% 30%, rgba(129, 140, 248, 0.08) 0%, transparent 25%);
         }
@@ -169,7 +169,7 @@
         /* ===== 搜索栏 ===== */
         .search-container { position: relative; margin-bottom: 20px; }
 
-        #station-search { 
+        #station-search {
             width: 100%;
             padding: 15px 20px;
             padding-left: 45px;
@@ -244,7 +244,7 @@
         }
 
         /* ===== 右侧控制栏 ===== */
-        h2 { 
+        h2 {
             margin-top: 0;
             font-size: 1.4rem;
             font-weight: 700;
@@ -287,7 +287,7 @@
 
         .date-row { display: flex; gap: 15px; }
         .date-row .form-group { flex: 1; }
-        
+
         .primary-btn {
             width: 100%;
             background: linear-gradient(135deg, var(--accent-color), #6366f1);
@@ -308,7 +308,7 @@
             filter: brightness(1.1);
             box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
         }
-        
+
         #result-area {
             margin-top: 30px;
             text-align: center;
@@ -375,7 +375,7 @@
             margin-bottom: 40px;
             font-size: 1.1rem;
         }
-        
+
         .var-category {
             margin-bottom: 40px;
             background: rgba(255,255,255,0.03);
@@ -392,7 +392,7 @@
             gap: 10px;
             font-size: 1.3rem;
         }
-        
+
         .var-table {
             width: 100%;
             border-collapse: collapse;
@@ -509,7 +509,7 @@
             <p style="color: var(--text-secondary); margin-bottom: 25px; line-height: 1.6;">
                 在地图上选择或搜索目标气象站，并设定时间范围，NCEI Go 将帮你构建直达 NCEI 服务器的 CSV 日数据下载链接。
             </p>
-            
+
             <div class="form-group">
                 <label for="stationId">已选定站点 (Selected Station):</label>
                 <div style="background: rgba(255,255,255,0.04); border: 2px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 15px; text-align: center; transition: all 0.3s;" id="stationBox">
@@ -539,7 +539,7 @@
                     下载 CSV 数据文件
                 </a>
             </div>
-            
+
             <div class="tip-box">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="flex-shrink: 0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                 <div>
@@ -561,7 +561,7 @@
             本页基于 NOAA/NCEI 官方 GHCN-Daily 文档，整理了 NCEI Go 默认下载的核心变量说明，并重点给出
             <strong>天气现象代码 WT01–WT22</strong> 的完整释义，帮助你读懂 CSV 中每一列的含义。
         </p>
-        
+
         <!-- 核心要素：温度 / 降水 / 积雪 -->
         <div class="var-category">
             <h3>🌡️ 核心气候要素（温度 / 降水 / 积雪）</h3>
@@ -671,7 +671,7 @@
             <h3>⛅ 天气现象代码（WT01–WT22）</h3>
             <p style="color: var(--text-secondary); margin-bottom: 12px;">
                 <code>WT**</code> 表示每日出现的天气现象类型，可以在同一天记录多个代码。
-                这些代码来自 GHCN-Daily 官方文档中的 Weather Type 定义。:contentReference[oaicite:1]{index=1}
+                这些代码来自 GHCN-Daily 官方文档中的 Weather Type 定义。
             </p>
             <table class="var-table">
                 <thead>
@@ -802,7 +802,7 @@
         <p class="doc-subtitle">
             欢迎使用 <strong>NCEI Go</strong> —— <strong>NCEI 即刻出发</strong>。本平台为你提供一条简单直接的路径，访问美国国家环境信息中心 (NOAA/NCEI) 的全球历史气候数据 (GHCND) 日摘要。
         </p>
-        
+
         <div class="var-category">
             <h3>🚀 标准操作流程 (SOP)</h3>
             <ol style="padding-left: 25px; color: var(--text-primary);">
@@ -853,14 +853,14 @@
             NCEI Go 是一个第三方数据导航工具。所有气象观测数据均直接来自 NOAA / NCEI 官方服务器，
             本网站不对原始数据做任何修改，仅提供图形化检索与下载入口。
         </p>
-        
+
         <div class="var-category">
             <h3>🏛️ 官方学术引用格式建议</h3>
             <p>在学术论文或研究报告中引用 GHCND 数据时，建议参考 NCEI 官方推荐格式：</p>
             <div class="citation-box">
-                Menne, M.J., I. Durre, B. Korzeniewski, S. McNeal, K. Thomas, X. Yin, S. Anthony, R. Ray, 
-                R.S. Vose, B.E. Gleason, and T.G. Houston, 2012: Global Historical Climatology Network - 
-                Daily (GHCN-Daily), Version 3. [indicate subset used following decimal, e.g. Version 3.22]. 
+                Menne, M.J., I. Durre, B. Korzeniewski, S. McNeal, K. Thomas, X. Yin, S. Anthony, R. Ray,
+                R.S. Vose, B.E. Gleason, and T.G. Houston, 2012: Global Historical Climatology Network -
+                Daily (GHCN-Daily), Version 3. [indicate subset used following decimal, e.g. Version 3.22].
                 NOAA National Centers for Environmental Information. doi:10.7289/V5D21VHZ [Accessed Date].
             </div>
         </div>
@@ -942,14 +942,22 @@
         let allStations = [];
         const stationLookup = {};
 
-        const markersCluster = L.markerClusterGroup({
-            showCoverageOnHover: false,
-            maxClusterRadius: 50,
-            spiderfyOnMaxZoom: true,
-            animate: true,
-            animateAddingMarkers: true
-        });
-        
+        // 尝试使用 MarkerCluster，如果插件未加载则优雅回退到普通图层组
+        let markersCluster;
+        if (L.markerClusterGroup && typeof L.markerClusterGroup === 'function') {
+            console.log('MarkerCluster 插件已加载，启用聚合图层。');
+            markersCluster = L.markerClusterGroup({
+                showCoverageOnHover: false,
+                maxClusterRadius: 50,
+                spiderfyOnMaxZoom: true,
+                animate: true,
+                animateAddingMarkers: true
+            });
+        } else {
+            console.warn('Leaflet.markercluster 未加载，回退为普通 L.layerGroup（无聚合效果）。');
+            markersCluster = L.layerGroup();
+        }
+
         const stationInput = document.getElementById('stationId');
         const stationNameDisplay = document.getElementById('stationNameDisplay');
         const stationBox = document.getElementById('stationBox');
@@ -996,8 +1004,8 @@
             stationBox.style.borderColor = "var(--accent-color)";
             stationBox.style.boxShadow = "0 0 25px rgba(56, 189, 248, 0.4)";
             stationBox.style.background = "rgba(56, 189, 248, 0.1)";
-            setTimeout(() => { 
-                stationBox.style.boxShadow = ""; 
+            setTimeout(() => {
+                stationBox.style.boxShadow = "";
                 stationBox.style.background = "rgba(255,255,255,0.04)";
             }, 800);
             map.closePopup();
@@ -1028,7 +1036,7 @@
                         <span class="search-item-name">${highlightedName}</span>
                         <span class="search-item-id">${station.id}</span>
                     `;
-                    
+
                     div.addEventListener('click', () => {
                         searchInput.value = station.name;
                         searchResults.style.display = 'none';
@@ -1063,7 +1071,7 @@
             if (target) {
                 target.style.display = (tabName === 'main') ? 'grid' : 'block';
             }
-            
+
             const btns = document.querySelectorAll('.nav-links button');
             const indexMap = { 'main': 0, 'variables': 1, 'guide': 2, 'citation': 3 };
             if (indexMap[tabName] !== undefined) btns[indexMap[tabName]].classList.add('active');
@@ -1118,4 +1126,3 @@
     </script>
 </body>
 </html>
-
