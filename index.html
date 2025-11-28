@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCEI Go｜全球历史气象数据导航 · NCEI 即刻出发</title>
+
+    <!-- Leaflet & MarkerCluster 样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+
+    <!-- 赛博风主题变量 -->
+    <style>
+        /* ===== 主题变量：默认深色（赛博感） ===== */
+        :root {
+            --bg-color: #0b0c15;
+            --card-bg: #131524;
+            --text-primary: #e4e6fb;
+            --text-secondary: #9aa0c5;
+            --accent-color: #38bdf8;
+            --success-color: #34d399;
+            --danger-color: #fb7185;
+            --glow-shadow: 0 4px 20px rgba(56, 189, 248, 0.25);
+            --gradient-text: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            --overlay-bg: rgba(11, 12, 21, 0.85);
+        }
+
+        /* ===== 明亮主题覆盖 ===== */
+        :root[data-theme="light"] {
+            --bg-color: #f5f5f7;
+            --card-bg: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --accent-color: #2563eb;
+            --success-color: #16a34a;
+            --danger-color: #dc2626;
+            --glow-shadow: 0 4px 20px rgba(37, 99, 235, 0.25);
+            --gradient-text: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --overlay-bg: rgba(243, 244, 246, 0.88);
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 30px;
+            min-height: 100vh;
+            box-sizing: border-box;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(129, 140, 248, 0.08) 0%, transparent 25%);
+        }
+
+        /* ===== 顶部导航栏 ===== */
+        header {
+            max-width: 1280px;
+            margin: 0 auto 35px auto;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+            padding-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .logo-en {
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 4px rgba(56, 189, 248, 0.3));
+        }
+
+        .logo-zh {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.08em;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links button {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-secondary);
+            padding: 10px 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .nav-links button:hover {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .nav-links button.active {
+            background: var(--accent-color);
+            color: #0b0c15;
+            border-color: var(--accent-color);
+            box-shadow: var(--glow-shadow);
+        }
+
+        .theme-toggle {
+            background: rgba(255,255,255,0.05);
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 8px 14px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.25s ease;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.35);
+        }
+
+        /* ===== 主布局 ===== */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 7fr 3fr;
+            gap: 30px;
+        }
+
+        .tech-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+        }
+
+        /* ===== 搜索栏 ===== */
+        .search-container { position: relative; margin-bottom: 20px; }
+
+        #station-search { 
+            width: 100%;
+            padding: 15px 20px;
+            padding-left: 45px;
+            background: rgba(255,255,255,0.05) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239aa0c5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'/%3E%3C/svg%3E") no-repeat 15px center/20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1.05rem;
+            transition: all 0.3s;
+        }
+
+        #station-search:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+            outline: none;
+        }
+
+        #search-results {
+            position: absolute;
+            top: 105%;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 12px;
+            max-height: 350px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .search-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-item:hover { background: rgba(56, 189, 248, 0.1); }
+
+        .search-item-name { font-weight: 600; color: var(--text-primary); }
+
+        .search-item-id {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* ===== 地图容器 ===== */
+        #map-card { padding: 0; overflow: hidden; border: 1px solid rgba(56, 189, 248, 0.2); }
+
+        #map-container { height: 600px; width: 100%; position: relative; }
+
+        .map-loading-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--overlay-bg);
+            color: var(--accent-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            font-weight: 600;
+            font-size: 1.1rem;
+            backdrop-filter: blur(4px);
+        }
+
+        /* ===== 右侧控制栏 ===== */
+        h2 { 
+            margin-top: 0;
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 25px;
+        }
+
+        .form-group { margin-bottom: 22px; }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        input[type="text"], input[type="date"] {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: var(--text-primary);
+            box-sizing: border-box;
+            font-family: 'Inter', monospace;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+        }
+
+        .date-row { display: flex; gap: 15px; }
+        .date-row .form-group { flex: 1; }
+        
+        .primary-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-color), #6366f1);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: var(--glow-shadow);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
+        }
+        
+        #result-area {
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+            padding: 25px;
+            background-color: rgba(52, 211, 153, 0.08);
+            border-radius: 12px;
+            border: 1px solid rgba(52, 211, 153, 0.3);
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 14px 40px;
+            background-color: var(--success-color);
+            color: #052e16;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            box-shadow: 0 4px 15px rgba(52, 211, 153, 0.4);
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            background-color: #10b981;
+            box-shadow: 0 8px 25px rgba(52, 211, 153, 0.5);
+        }
+
+        .tip-box {
+            background: rgba(251, 113, 133, 0.08);
+            border: 1px solid rgba(251, 113, 133, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            color: #fda4af;
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        /* ===== 文档页 ===== */
+        .doc-section {
+            display: none;
+            max-width: 1000px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .doc-section h2 {
+            border: none;
+            -webkit-text-fill-color: initial;
+            background: none;
+            color: var(--text-primary);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .doc-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        
+        .var-category {
+            margin-bottom: 40px;
+            background: rgba(255,255,255,0.03);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .var-category h3 {
+            color: var(--accent-color);
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .var-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .var-table th {
+            text-align: left;
+            color: var(--text-secondary);
+            padding: 12px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .var-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .var-code {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: var(--accent-color);
+            background: rgba(56, 189, 248, 0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .var-desc { color: var(--text-primary); }
+        .var-unit { color: var(--text-secondary); font-size: 0.9rem; font-style: italic; }
+
+        .citation-box {
+            background: rgba(255,255,255,0.04);
+            padding: 25px;
+            border-left: 4px solid var(--accent-color);
+            margin: 25px 0;
+            font-style: italic;
+            border-radius: 0 12px 12px 0;
+        }
+
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr; }
+            #map-container { height: 450px; }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .nav-links { flex: 1; justify-content: flex-start; }
+        }
+
+        /* ===== Leaflet 聚合图标样式 ===== */
+        .marker-cluster {
+            background-color: rgba(56, 189, 248, 0.3) !important;
+        }
+
+        .marker-cluster div {
+            background-color: rgba(14, 165, 233, 0.85) !important;
+            color: white !important;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        }
+    </style>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- 顶部导航：品牌 + Tab + 主题切换 -->
+    <header>
+        <div class="logo">
+            <span class="logo-en">NCEI Go</span>
+            <span class="logo-zh">NCEI 即刻出发</span>
+        </div>
+        <div class="header-right">
+            <nav class="nav-links">
+                <button class="active" onclick="switchTab('main')">🗺️ 数据控制台</button>
+                <button onclick="switchTab('variables')">📊 变量全解字典</button>
+                <button onclick="switchTab('guide')">💡 新手使用指南</button>
+                <button onclick="switchTab('citation')">⚖️ 数据引用与声明</button>
+            </nav>
+            <button id="theme-toggle" class="theme-toggle" type="button">🌙 深色模式</button>
+        </div>
+    </header>
+
+    <!-- 主功能页：地图 + 配置面板 -->
+    <main id="tab-main" class="container">
+        <!-- 左侧：Leaflet 地图 -->
+        <section class="tech-card" id="map-card">
+            <div style="padding: 25px 25px 0 25px;">
+                <div class="search-container">
+                    <input type="text" id="station-search" placeholder="搜索全球气象站（输入英文城市名，如 Tokyo, London）">
+                    <div id="search-results"></div>
+                </div>
+            </div>
+            <div id="map-container">
+                <div id="map-loading" class="map-loading-overlay">正在加载全球气象站点，请稍候...</div>
+            </div>
+        </section>
+
+        <!-- 右侧：配置面板 -->
+        <section class="tech-card">
+            <h2>数据获取配置面板</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 25px; line-height: 1.6;">
+                在地图上选择或搜索目标气象站，并设定时间范围，NCEI Go 将帮你构建直达 NCEI 服务器的 CSV 日数据下载链接。
+            </p>
+            
+            <div class="form-group">
+                <label for="stationId">已选定站点 (Selected Station):</label>
+                <div style="background: rgba(255,255,255,0.04); border: 2px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 15px; text-align: center; transition: all 0.3s;" id="stationBox">
+                    <input type="text" id="stationId" readonly placeholder="<- 尚未选择站点" style="background: transparent; border: none; font-weight: 700; color: var(--accent-color); text-align: center; font-size: 1.1rem; width: 100%; padding: 0; margin-bottom: 5px;">
+                    <p id="stationNameDisplay" style="color: var(--text-secondary); margin: 0; font-size: 0.9rem; min-height: 1.2em; font-weight: 500;"></p>
+                </div>
+            </div>
+
+            <div class="date-row">
+                <div class="form-group">
+                    <label for="startDate">起始日期 (Start Date):</label>
+                    <input type="date" id="startDate" value="2023-01-01">
+                </div>
+                <div class="form-group">
+                    <label for="endDate">结束日期 (End Date):</label>
+                    <input type="date" id="endDate" value="2023-01-31">
+                </div>
+            </div>
+
+            <button class="primary-btn" onclick="generateLink()">生成数据下载链接</button>
+
+            <div id="result-area">
+                <h3 style="margin: 0; color: var(--success-color); font-size: 1.2rem;">✅ 下载链接已就绪</h3>
+                <p style="color: var(--text-secondary); margin: 10px 0 20px 0;">点击下方按钮，即可从 NCEI 官方服务器获取 CSV 文件。</p>
+                <a id="download-link" class="download-btn" href="#" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                    下载 CSV 数据文件
+                </a>
+            </div>
+            
+            <div class="tip-box">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="flex-shrink: 0;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                <div>
+                    <strong>空文件提示：</strong> 如果下载的 CSV 文件只有表头而没有任何数据行，说明该站点在所选时间段内未向 NCEI 上报记录。这在历史数据中很常见，建议尝试：
+                    <ul style="margin: 8px 0 0 18px; padding: 0; color: var(--text-secondary);">
+                        <li>适当放宽时间范围；</li>
+                        <li>选择附近的基准站点（机场 / 国家测站）；</li>
+                        <li>对结果做“缺测数据”说明，而不是简单视为“无雨/无雪”。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 文档页：变量说明 -->
+    <section id="tab-variables" class="doc-section">
+        <h2>GHCND 日数据变量全解字典</h2>
+        <p class="doc-subtitle">
+            本页基于 NOAA/NCEI 官方 GHCN-Daily 文档，整理了 NCEI Go 默认下载的核心变量说明，并重点给出
+            <strong>天气现象代码 WT01–WT22</strong> 的完整释义，帮助你读懂 CSV 中每一列的含义。
+        </p>
+        
+        <!-- 核心要素：温度 / 降水 / 积雪 -->
+        <div class="var-category">
+            <h3>🌡️ 核心气候要素（温度 / 降水 / 积雪）</h3>
+            <table class="var-table">
+                <thead>
+                    <tr>
+                        <th>代码</th>
+                        <th>含义说明</th>
+                        <th>单位（metric）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="var-code">TMAX</td>
+                        <td class="var-desc">日最高气温（Maximum temperature）。NCEI Go 默认使用 metric，返回单位为 °C。</td>
+                        <td class="var-unit">摄氏度 (°C)</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">TMIN</td>
+                        <td class="var-desc">日最低气温（Minimum temperature）。</td>
+                        <td class="var-unit">摄氏度 (°C)</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">TAVG</td>
+                        <td class="var-desc">日平均气温（Average temperature），部分站点提供，部分需要用户自行由 TMAX / TMIN 计算。</td>
+                        <td class="var-unit">摄氏度 (°C)</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">PRCP</td>
+                        <td class="var-desc">日降水量总量（Precipitation），包括雨、雪等折算为水量的总和。</td>
+                        <td class="var-unit">毫米 (mm)</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">SNOW</td>
+                        <td class="var-desc">日降雪量（Snowfall），按雪层厚度统计。</td>
+                        <td class="var-unit">毫米或厘米（视接口设置，metric 下一般为 mm）</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">SNWD</td>
+                        <td class="var-desc">积雪深度（Snow depth），通常代表当日观测时刻地表积雪厚度。</td>
+                        <td class="var-unit">毫米或厘米</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 辅助气象要素 -->
+        <div class="var-category">
+            <h3>💨 辅助气象要素（风、辐射等）</h3>
+            <table class="var-table">
+                <thead>
+                    <tr>
+                        <th>代码</th>
+                        <th>含义说明</th>
+                        <th>单位（metric）</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="var-code">AWND</td>
+                        <td class="var-desc">
+                            平均日风速（Average daily wind speed）。对风能、体感温度等分析有用。
+                        </td>
+                        <td class="var-unit">米/秒 (m/s)</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">TOBS</td>
+                        <td class="var-desc">
+                            观测时气温（Temperature at observation time），即观测时刻记录的气温值。
+                        </td>
+                        <td class="var-unit">摄氏度 (°C)</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">EVAP</td>
+                        <td class="var-desc">
+                            蒸发皿蒸发量（Evaporation of water from evaporation pan），常用于蒸散估算、水量平衡研究。
+                        </td>
+                        <td class="var-unit">毫米 (mm)</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WESD</td>
+                        <td class="var-desc">
+                            地面积雪含水量（Water equivalent of snow on the ground），是积雪深度转换成水量的一个重要指标。
+                        </td>
+                        <td class="var-unit">毫米 (mm)</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WESF</td>
+                        <td class="var-desc">
+                            当日降雪的含水量（Water equivalent of snowfall），和 SNOW 对应。
+                        </td>
+                        <td class="var-unit">毫米 (mm)</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">PSUN</td>
+                        <td class="var-desc">
+                            日照百分比（Daily percent of possible sunshine），部分站点提供，可用于辐射与能量平衡估算。
+                        </td>
+                        <td class="var-unit">百分比 (%)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 天气现象 Weather Type WT** -->
+        <div class="var-category">
+            <h3>⛅ 天气现象代码（WT01–WT22）</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 12px;">
+                <code>WT**</code> 表示每日出现的天气现象类型，可以在同一天记录多个代码。
+                这些代码来自 GHCN-Daily 官方文档中的 Weather Type 定义。:contentReference[oaicite:1]{index=1}
+            </p>
+            <table class="var-table">
+                <thead>
+                    <tr>
+                        <th>代码</th>
+                        <th>现象说明（中 / 英）</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="var-code">WT01</td>
+                        <td class="var-desc">雾、冰雾或冻雾（Fog, ice fog, or freezing fog，可能包括浓雾）。</td>
+                        <td class="var-unit">能见度降低，一般为辐射雾或平流雾。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT02</td>
+                        <td class="var-desc">浓雾或浓冻雾（Heavy fog or heavy freezing fog）。</td>
+                        <td class="var-unit">比 WT01 更强的雾，能见度更差。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT03</td>
+                        <td class="var-desc">雷暴（Thunder）。</td>
+                        <td class="var-unit">表示当日出现打雷现象，往往伴随对流天气。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT04</td>
+                        <td class="var-desc">冰粒 / 霰 / 小冰雹（Ice pellets, sleet, snow pellets or small hail）。</td>
+                        <td class="var-unit">固态降水，但颗粒较小，多与过冷水滴有关。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT05</td>
+                        <td class="var-desc">冰雹（Hail，可能包括小冰雹）。</td>
+                        <td class="var-unit">强对流天气标志，对农牧业和建筑有潜在破坏。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT06</td>
+                        <td class="var-desc">覆冰 / 雾凇（Glaze or rime）。</td>
+                        <td class="var-unit">地物表面结冰，影响交通、电力等。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT07</td>
+                        <td class="var-desc">扬尘、火山灰、吹沙等（Dust, volcanic ash, blowing dust/sand or blowing obstruction）。</td>
+                        <td class="var-unit">包括沙尘暴、火山灰等降低能见度的现象。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT08</td>
+                        <td class="var-desc">烟或霾（Smoke or haze）。</td>
+                        <td class="var-unit">常见于火灾、工业污染或高湿条件。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT09</td>
+                        <td class="var-desc">吹雪或飘雪（Blowing or drifting snow）。</td>
+                        <td class="var-unit">风将地面雪吹起或使其飘移，能见度降低。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT10</td>
+                        <td class="var-desc">龙卷 / 水龙卷 / 漏斗云（Tornado, waterspout, or funnel cloud）。</td>
+                        <td class="var-unit">极端强对流现象，破坏力极大。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT11</td>
+                        <td class="var-desc">大风或破坏性大风（High or damaging winds）。</td>
+                        <td class="var-unit">强调风力强度和破坏性，而不仅仅是风速数值。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT12</td>
+                        <td class="var-desc">海浪飞沫（Blowing spray）。</td>
+                        <td class="var-unit">多见于沿海或大水体附近的强风天气。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT13</td>
+                        <td class="var-desc">薄雾（Mist）。</td>
+                        <td class="var-unit">比雾弱，能见度有所降低但不及 WT01。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT14</td>
+                        <td class="var-desc">毛毛雨（Drizzle）。</td>
+                        <td class="var-unit">小而密的液态降水，雨滴直径较小。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT15</td>
+                        <td class="var-desc">冻毛毛雨（Freezing drizzle）。</td>
+                        <td class="var-unit">在地面或物体表面容易形成薄冰层。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT16</td>
+                        <td class="var-desc">雨（Rain），可能包含冻雨、毛毛雨及冻毛毛雨。</td>
+                        <td class="var-unit">“雨”类现象的综合标签。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT17</td>
+                        <td class="var-desc">冻雨（Freezing rain）。</td>
+                        <td class="var-unit">落地即结冰，对电线和道路影响极大。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT18</td>
+                        <td class="var-desc">雪 / 雪粒 / 雪晶（Snow, snow pellets, snow grains, or ice crystals）。</td>
+                        <td class="var-unit">固态降水的总括标签之一。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT19</td>
+                        <td class="var-desc">降水来源不明（Unknown source of precipitation）。</td>
+                        <td class="var-unit">有降水记录，但类型无法可靠区分。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT21</td>
+                        <td class="var-desc">地雾（Ground fog）。</td>
+                        <td class="var-unit">靠近地面的雾层，顶高较低，影响路面交通。</td>
+                    </tr>
+                    <tr>
+                        <td class="var-code">WT22</td>
+                        <td class="var-desc">冰雾 / 冻雾（Ice fog or freezing fog）。</td>
+                        <td class="var-unit">多出现在高纬或极寒地区，气溶胶以冰晶为主。</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p style="color: var(--text-secondary); margin-top: 15px; font-size: 0.9rem;">
+                说明：并非所有站点、所有日期都会提供 <code>WT**</code> 列；如果 CSV 中缺失这些列，说明该站点在该时间段未记录天气现象代码。
+            </p>
+        </div>
+    </section>
+
+    <!-- 文档页：新手指南 -->
+    <section id="tab-guide" class="doc-section">
+        <h2>💡 新手使用指南</h2>
+        <p class="doc-subtitle">
+            欢迎使用 <strong>NCEI Go</strong> —— <strong>NCEI 即刻出发</strong>。本平台为你提供一条简单直接的路径，访问美国国家环境信息中心 (NOAA/NCEI) 的全球历史气候数据 (GHCND) 日摘要。
+        </p>
+        
+        <div class="var-category">
+            <h3>🚀 标准操作流程 (SOP)</h3>
+            <ol style="padding-left: 25px; color: var(--text-primary);">
+                <li style="margin-bottom: 15px;">
+                    <strong>定位目标站点：</strong>你有两种方式在全球精选站点（约 2800 个）中找到目标。
+                    <ul style="margin-top: 10px; color: var(--text-secondary);">
+                        <li><strong>方式 A · 地图交互：</strong> 缩放和拖动地图，点击聚合圆圈逐层展开，直到看到单个蓝色站点标记，然后点击它。</li>
+                        <li><strong>方式 B · 关键词搜索：</strong> 在地图上方的搜索框中输入城市英文名（如 <code>Beijing</code>, <code>Tokyo</code>, <code>New York</code>），从下拉列表中选择一个结果，地图会自动飞到对应站点。</li>
+                    </ul>
+                </li>
+                <li style="margin-bottom: 15px;">
+                    <strong>确认站点信息：</strong> 选择完成后，右侧“已选定站点”区域会展示该站点的 GHCND ID 和名称，请简单核对是否为你要的城市 / 机场 / 观测点。
+                </li>
+                <li style="margin-bottom: 15px;">
+                    <strong>设定时间范围：</strong> 在控制面板中设置起始日期和结束日期。建议首次尝试时先下载 1 年左右的数据，确认格式与内容无误后再扩展时间段。
+                </li>
+                <li>
+                    <strong>生成并下载：</strong> 点击“生成数据下载链接”按钮。验证通过后，下方会出现绿色下载按钮。点击它，浏览器将直连 NCEI 官方服务并获取 CSV 文件。
+                </li>
+            </ol>
+        </div>
+
+        <div class="var-category">
+            <h3>❓ 常见问题 FAQ</h3>
+            <p><strong>Q1：为什么下载到的 CSV 文件是空的？</strong></p>
+            <p style="color: var(--text-secondary); margin-top: 0;">
+                很常见的原因是：该站点在你选定的时间范围内并未上报任何数据。历史观测往往存在“停测 / 断档 / 仅测部分要素”等情况。
+                建议调宽时间范围（例如整个十年），或切换到同城的其它国家基准站、机场站。
+            </p>
+
+            <p><strong>Q2：NCEI Go 会修改或缓存气象数据吗？</strong></p>
+            <p style="color: var(--text-secondary); margin-top: 0;">
+                不会。NCEI Go 只负责帮你构建请求 URL，浏览器直接向 NOAA/NCEI 官方服务器发起下载请求。
+                数据文件（CSV）的内容、质量和更新完全由 NCEI 负责。
+            </p>
+
+            <p><strong>Q3：为什么不同站点的变量列不完全一致？</strong></p>
+            <p style="color: var(--text-secondary); margin-top: 0;">
+                GHCND 是一个全球综合数据库，不是每个站点都观测所有要素。部分站点仅有 PRCP（降水），也有少数高质量站点提供多种变量（温度、风、积雪、天气现象等）。这属于正常现象。
+            </p>
+        </div>
+    </section>
+
+    <!-- 文档页：引用与声明 -->
+    <section id="tab-citation" class="doc-section">
+        <h2>⚖️ 数据归属与引用声明</h2>
+        <p class="doc-subtitle">
+            NCEI Go 是一个第三方数据导航工具。所有气象观测数据均直接来自 NOAA / NCEI 官方服务器，
+            本网站不对原始数据做任何修改，仅提供图形化检索与下载入口。
+        </p>
+        
+        <div class="var-category">
+            <h3>🏛️ 官方学术引用格式建议</h3>
+            <p>在学术论文或研究报告中引用 GHCND 数据时，建议参考 NCEI 官方推荐格式：</p>
+            <div class="citation-box">
+                Menne, M.J., I. Durre, B. Korzeniewski, S. McNeal, K. Thomas, X. Yin, S. Anthony, R. Ray, 
+                R.S. Vose, B.E. Gleason, and T.G. Houston, 2012: Global Historical Climatology Network - 
+                Daily (GHCN-Daily), Version 3. [indicate subset used following decimal, e.g. Version 3.22]. 
+                NOAA National Centers for Environmental Information. doi:10.7289/V5D21VHZ [Accessed Date].
+            </div>
+        </div>
+
+        <div class="var-category">
+            <h3>📝 简明引用示例（中文）</h3>
+            <p>在中文报告或媒体稿中，可采用类似表述：</p>
+            <div class="citation-box" style="border-color: #818cf8;">
+                数据来源：美国国家环境信息中心 (NOAA/NCEI) 全球历史气候网络日报数据集 (GHCND)，通过 NCEI Go 平台访问。访问日期：YYYY年MM月DD日。
+            </div>
+        </div>
+
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 30px;">
+            <strong>免责声明：</strong> NCEI Go 仅提供数据检索与下载路径，不对 NCEI 原始数据的准确性、完整性、及时性或可用性作出任何保证。使用数据产生的风险由用户自行承担。
+        </p>
+    </section>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.js"></script>
+
+    <script>
+        // ===== 主题切换逻辑 =====
+        const root = document.documentElement;
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const storedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        let currentTheme = storedTheme || (prefersDark ? 'dark' : 'dark'); // 默认偏向深色赛博风
+
+        function updateThemeToggleLabel() {
+            if (!themeToggleBtn) return;
+            themeToggleBtn.textContent = currentTheme === 'dark'
+                ? '☀️ 浅色模式'
+                : '🌙 深色模式';
+        }
+
+        function applyThemeVars() {
+            root.setAttribute('data-theme', currentTheme);
+            updateThemeToggleLabel();
+        }
+
+        // ===== 地图初始化 =====
+        const map = L.map('map-container', { zoomControl: false }).setView([25, 0], 2);
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+        const darkTiles = L.tileLayer(
+            'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+            { attribution: '&copy; OpenStreetMap, &copy; CARTO', maxZoom: 18, minZoom: 2 }
+        );
+
+        const lightTiles = L.tileLayer(
+            'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+            { attribution: '&copy; OpenStreetMap, &copy; CARTO', maxZoom: 18, minZoom: 2 }
+        );
+
+        function updateBaseMapTheme() {
+            if (currentTheme === 'dark') {
+                if (map.hasLayer(lightTiles)) map.removeLayer(lightTiles);
+                if (!map.hasLayer(darkTiles)) darkTiles.addTo(map);
+            } else {
+                if (map.hasLayer(darkTiles)) map.removeLayer(darkTiles);
+                if (!map.hasLayer(lightTiles)) lightTiles.addTo(map);
+            }
+        }
+
+        applyThemeVars();
+        updateBaseMapTheme();
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', () => {
+                currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('theme', currentTheme);
+                applyThemeVars();
+                updateBaseMapTheme();
+            });
+        }
+
+        // ===== 站点加载与交互 =====
+        let allStations = [];
+        const stationLookup = {};
+
+        const markersCluster = L.markerClusterGroup({
+            showCoverageOnHover: false,
+            maxClusterRadius: 50,
+            spiderfyOnMaxZoom: true,
+            animate: true,
+            animateAddingMarkers: true
+        });
+        
+        const stationInput = document.getElementById('stationId');
+        const stationNameDisplay = document.getElementById('stationNameDisplay');
+        const stationBox = document.getElementById('stationBox');
+        const loadingOverlay = document.getElementById('map-loading');
+
+        // 使用你的 stations_core.json
+        fetch('stations_core.json')
+            .then(res => {
+                if (!res.ok) throw new Error("无法加载站点数据文件");
+                return res.json();
+            })
+            .then(data => {
+                allStations = data;
+                data.forEach(station => {
+                    const marker = L.marker([station.lat, station.lon]);
+                    const popupContent = `
+                        <div style="text-align:center; font-family:'Inter',sans-serif; color:#0b0c15;">
+                            <strong style="font-size:1.1em;">${station.name}</strong><br>
+                            <code style="background:#eee; padding:3px 6px; border-radius:4px; font-size:0.9em;">ID: ${station.id}</code><br>
+                            <button onclick="selectStation('${station.id}')" style="margin-top:12px; cursor:pointer; background:linear-gradient(135deg, #38bdf8, #6366f1); color:white; border:none; padding:8px 15px; border-radius:6px; font-weight:600; width:100%;">
+                                选择此站点
+                            </button>
+                        </div>
+                    `;
+                    marker.bindPopup(popupContent, { closeButton: false, className: 'custom-popup' });
+                    markersCluster.addLayer(marker);
+                    stationLookup[station.id] = marker;
+                });
+                map.addLayer(markersCluster);
+                loadingOverlay.style.opacity = 0;
+                setTimeout(() => loadingOverlay.style.display = 'none', 500);
+            })
+            .catch(err => {
+                loadingOverlay.innerHTML = `<span style="color:var(--danger-color)">站点数据加载失败：${err.message}</span>`;
+            });
+
+        // 暴露给 popup 使用，只传 ID，名称在这里查，避免引号转义问题
+        window.selectStation = function(id) {
+            const station = allStations.find(s => s.id === id);
+            const name = station ? station.name : id;
+
+            stationInput.value = id;
+            stationNameDisplay.textContent = name;
+            stationBox.style.borderColor = "var(--accent-color)";
+            stationBox.style.boxShadow = "0 0 25px rgba(56, 189, 248, 0.4)";
+            stationBox.style.background = "rgba(56, 189, 248, 0.1)";
+            setTimeout(() => { 
+                stationBox.style.boxShadow = ""; 
+                stationBox.style.background = "rgba(255,255,255,0.04)";
+            }, 800);
+            map.closePopup();
+        };
+
+        const searchInput = document.getElementById('station-search');
+        const searchResults = document.getElementById('search-results');
+
+        searchInput.addEventListener('input', function(e) {
+            const searchText = e.target.value.toLowerCase().trim();
+            searchResults.innerHTML = '';
+            if (searchText.length < 2) { searchResults.style.display = 'none'; return; }
+
+            const filtered = allStations
+                .filter(s => s.name && s.name.toLowerCase().includes(searchText))
+                .slice(0, 8);
+
+            if (filtered.length > 0) {
+                filtered.forEach(station => {
+                    const div = document.createElement('div');
+                    div.className = 'search-item';
+                    const regex = new RegExp(`(${searchText})`, 'gi');
+                    const highlightedName = station.name.replace(
+                        regex,
+                        '<span style="color:var(--accent-color);">$1</span>'
+                    );
+                    div.innerHTML = `
+                        <span class="search-item-name">${highlightedName}</span>
+                        <span class="search-item-id">${station.id}</span>
+                    `;
+                    
+                    div.addEventListener('click', () => {
+                        searchInput.value = station.name;
+                        searchResults.style.display = 'none';
+                        map.flyTo([station.lat, station.lon], 10, { animate: true, duration: 1.2 });
+                        const marker = stationLookup[station.id];
+                        if (marker) {
+                            markersCluster.zoomToShowLayer(marker, () => marker.openPopup());
+                        }
+                    });
+                    searchResults.appendChild(div);
+                });
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.innerHTML = '<div class="search-item" style="color: var(--text-secondary); justify-content: center;">未找到匹配的气象站</div>';
+                searchResults.style.display = 'block';
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.style.display = 'none';
+            }
+        });
+
+        // Tab 切换
+        function switchTab(tabName) {
+            document.getElementById('tab-main').style.display = 'none';
+            document.querySelectorAll('.doc-section').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.nav-links button').forEach(btn => btn.classList.remove('active'));
+
+            const target = document.getElementById('tab-' + tabName);
+            if (target) {
+                target.style.display = (tabName === 'main') ? 'grid' : 'block';
+            }
+            
+            const btns = document.querySelectorAll('.nav-links button');
+            const indexMap = { 'main': 0, 'variables': 1, 'guide': 2, 'citation': 3 };
+            if (indexMap[tabName] !== undefined) btns[indexMap[tabName]].classList.add('active');
+
+            if (tabName === 'main') map.invalidateSize();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 生成 NCEI 下载链接
+        function generateLink() {
+            const station = stationInput.value.trim();
+            const start = document.getElementById('startDate').value;
+            const end = document.getElementById('endDate').value;
+            const resultArea = document.getElementById('result-area');
+            const downloadLink = document.getElementById('download-link');
+
+            if (!station) {
+                alert("⚠️ 尚未选择站点。\n请先在地图中点击站点，或通过搜索栏锁定一个气象站。");
+                return;
+            }
+            if (start > end) {
+                alert("⚠️ 日期设置有误：起始日期不能晚于结束日期。");
+                return;
+            }
+
+            // NCEI Access Data Service API v1
+            const baseUrl = "https://www.ncei.noaa.gov/access/services/data/v1";
+            const stationDisplayName = stationNameDisplay.textContent || station;
+            const safeStationName = stationDisplayName
+                .replace(/[^\w\s\u4e00-\u9fa5-]/gi, '_')
+                .substring(0, 30);
+
+            const params = new URLSearchParams({
+                dataset: 'daily-summaries',
+                stations: station,
+                startDate: start,
+                endDate: end,
+                format: 'csv',
+                units: 'metric',
+                includeStationName: 'true',
+                includeAttributes: 'false'
+            });
+
+            downloadLink.href = `${baseUrl}?${params.toString()}`;
+            downloadLink.setAttribute(
+                'download',
+                `NCEI_Go_${safeStationName}_${start}_${end}.csv`
+            );
+            resultArea.style.display = 'block';
+            resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>
