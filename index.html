@@ -63,7 +63,8 @@
         }
 
         /* RESET & BASE */
-        body { margin: 0; background: var(--bg-body); color: var(--text-main); font-family: 'Inter', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: background 0.4s, color 0.4s; }
+        /* Increased base font size for better readability */
+        body { margin: 0; background: var(--bg-body); color: var(--text-main); font-family: 'Inter', sans-serif; font-size: 16px; height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: background 0.4s, color 0.4s; }
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -78,25 +79,28 @@
         }
         
         .brand { cursor: pointer; display: flex; flex-direction: column; justify-content: center; }
-        .logo { font-family: 'Orbitron'; font-size: 42px; font-weight: 900; color: var(--text-main); letter-spacing: 2px; line-height: 1; text-shadow: 0 0 30px var(--accent-glow); transition: 0.3s; }
+        /* Font size increased: 42px -> 46px */
+        .logo { font-family: 'Orbitron'; font-size: 46px; font-weight: 900; color: var(--text-main); letter-spacing: 2px; line-height: 1; text-shadow: 0 0 30px var(--accent-glow); transition: 0.3s; }
         .logo span { color: var(--accent); }
-        .slogan { font-size: 11px; color: var(--text-sub); letter-spacing: 4px; text-transform: uppercase; font-weight: 700; margin-top: 8px; padding-left: 4px; }
+        .slogan { font-size: 12px; color: var(--text-sub); letter-spacing: 4px; text-transform: uppercase; font-weight: 700; margin-top: 8px; padding-left: 4px; }
 
         .theme-center-btn {
             position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-            width: 56px; height: 56px; border-radius: 50%; border: var(--border); background: var(--bg-card);
-            color: var(--text-main); font-size: 24px; display: flex; align-items: center; justify-content: center;
+            width: 60px; height: 60px; border-radius: 50%; border: var(--border); background: var(--bg-card);
+            color: var(--text-main); font-size: 26px; display: flex; align-items: center; justify-content: center;
             cursor: pointer; transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); z-index: 102; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
         .theme-center-btn:hover { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 25px var(--gold); transform: translate(-50%, -50%) scale(1.15) rotate(180deg); }
 
         .menu-bar { display: flex; gap: 12px; background: rgba(125,125,125,0.05); padding: 6px; border-radius: 60px; border: var(--border); }
         .nav-btn {
-            background: transparent; border: none; color: var(--text-sub); padding: 10px 24px;
+            background: transparent; border: none; color: var(--text-sub); padding: 12px 28px;
             border-radius: 40px; cursor: pointer; display: flex; flex-direction: column; align-items: center; line-height: 1.1; transition: 0.3s;
         }
-        .nav-main-text { font-size: 13px; font-weight: 700; }
-        .nav-sub-text { font-size: 9px; text-transform: uppercase; font-weight: 600; opacity: 0.6; margin-top: 3px; }
+        /* Font size increased: 13px -> 15px */
+        .nav-main-text { font-size: 15px; font-weight: 700; }
+        /* Font size increased: 9px -> 11px */
+        .nav-sub-text { font-size: 11px; text-transform: uppercase; font-weight: 600; opacity: 0.6; margin-top: 3px; }
         .nav-btn:hover { color: var(--text-main); background: rgba(125,125,125,0.08); }
         .nav-btn.active { background: var(--bg-card); color: var(--accent); box-shadow: 0 4px 15px var(--accent-glow); }
 
@@ -105,8 +109,9 @@
         .map-box { flex: 1; position: relative; background: #000; overflow: hidden; }
         #map { width: 100%; height: 100%; z-index: 1; background: var(--bg-body); }
 
-        /* STATUS WIDGET (Inventory Status) */
+        /* STATUS WIDGET (HIDDEN as per request) */
         .db-status {
+            display: none; /* Hidden */
             position: absolute; top: 25px; left: 25px; z-index: 500;
             background: var(--bg-card); padding: 20px; border-radius: var(--radius-md); border: var(--border);
             box-shadow: var(--shadow); min-width: 280px; backdrop-filter: blur(10px);
@@ -126,62 +131,70 @@
         .upload-mini:hover { border-color: var(--accent); color: var(--accent); background: rgba(125,125,125,0.1); }
 
         /* CONTROL PANEL */
-        .ctrl-box { width: 460px; background: var(--bg-panel); border-left: var(--border); display: flex; flex-direction: column; z-index: 50; box-shadow: var(--shadow); backdrop-filter: var(--backdrop); }
+        .ctrl-box { width: 480px; background: var(--bg-panel); border-left: var(--border); display: flex; flex-direction: column; z-index: 50; box-shadow: var(--shadow); backdrop-filter: var(--backdrop); }
         .ctrl-content { padding: 40px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 36px; }
 
-        .section-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-left: 4px solid var(--accent); padding-left: 12px; transition: border-color 0.3s; }
-        .h-cn { font-size: 15px; font-weight: 800; color: var(--text-main); }
-        .h-en { font-size: 11px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; margin-left: 8px; letter-spacing: 0.5px; }
+        .section-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-left: 5px solid var(--accent); padding-left: 14px; transition: border-color 0.3s; }
+        /* Font size increased: 15px -> 18px */
+        .h-cn { font-size: 18px; font-weight: 800; color: var(--text-main); }
+        /* Font size increased: 11px -> 13px */
+        .h-en { font-size: 13px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; margin-left: 10px; letter-spacing: 0.5px; }
 
         .status-card { 
             background: rgba(125,125,125,0.03); border: var(--border); border-radius: var(--radius-xl); 
-            padding: 24px; text-align: center; transition: 0.4s; position: relative; overflow: hidden; 
+            padding: 26px; text-align: center; transition: 0.4s; position: relative; overflow: hidden; 
         }
         .status-card.active { 
             background: linear-gradient(145deg, var(--bg-card) 0%, rgba(125,125,125,0.05) 100%); 
             border-color: var(--accent); box-shadow: 0 0 40px var(--accent-glow); 
         }
-        .st-val { font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .st-code { font-family: 'JetBrains Mono'; font-size: 11px; color: var(--accent); background: rgba(125,125,125,0.1); padding: 5px 12px; border-radius: 6px; display: inline-block; }
+        /* Font size increased: 20px -> 26px */
+        .st-val { font-size: 26px; font-weight: 800; color: var(--text-main); margin-bottom: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        /* Font size increased: 11px -> 13px */
+        .st-code { font-family: 'JetBrains Mono'; font-size: 13px; color: var(--accent); background: rgba(125,125,125,0.1); padding: 6px 14px; border-radius: 6px; display: inline-block; }
 
-        .batch-switch { display: flex; align-items: center; gap: 12px; background: rgba(125,125,125,0.05); padding: 8px 12px; border-radius: 10px; }
-        .switch-label { font-size: 12px; color: var(--text-main); font-weight: 600; cursor: pointer; }
-        .switch { position: relative; display: inline-block; width: 42px; height: 22px; }
+        .batch-switch { display: flex; align-items: center; gap: 12px; background: rgba(125,125,125,0.05); padding: 10px 14px; border-radius: 10px; }
+        /* Font size increased: 12px -> 14px */
+        .switch-label { font-size: 14px; color: var(--text-main); font-weight: 600; cursor: pointer; }
+        .switch { position: relative; display: inline-block; width: 46px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #666; transition: .4s; border-radius: 20px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--accent); }
-        input:checked + .slider:before { transform: translateX(20px); }
+        input:checked + .slider:before { transform: translateX(22px); }
 
-        .sel-list { max-height: 140px; overflow-y: auto; background: rgba(125,125,125,0.05); border-radius: 12px; padding: 5px; margin-top: 15px; display: none; border: var(--border); }
-        .sel-item { padding: 10px 14px; border-bottom: 1px solid rgba(125,125,125,0.1); font-size: 13px; display: flex; justify-content: space-between; color: var(--text-main); align-items: center; }
+        .sel-list { max-height: 160px; overflow-y: auto; background: rgba(125,125,125,0.05); border-radius: 12px; padding: 5px; margin-top: 15px; display: none; border: var(--border); }
+        .sel-item { padding: 12px 16px; border-bottom: 1px solid rgba(125,125,125,0.1); font-size: 14px; display: flex; justify-content: space-between; color: var(--text-main); align-items: center; }
         .sel-del { color: #ef4444; cursor: pointer; font-weight: 800; padding: 4px 8px; border-radius: 4px; }
         .sel-del:hover { background: rgba(239,68,68,0.1); }
 
-        .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
         .mode-btn { 
-            background: rgba(125,125,125,0.04); border: 1px solid transparent; padding: 16px; border-radius: 16px; 
-            cursor: pointer; text-align: center; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 4px; 
+            background: rgba(125,125,125,0.04); border: 1px solid transparent; padding: 18px; border-radius: 16px; 
+            cursor: pointer; text-align: center; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 6px; 
         }
-        .mb-en { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-main); letter-spacing: 1px; }
-        .mb-cn { font-size: 13px; color: var(--text-sub); }
+        .mb-en { font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-main); letter-spacing: 1px; }
+        /* Font size increased: 13px -> 15px */
+        .mb-cn { font-size: 15px; color: var(--text-sub); }
         .mode-btn:hover { background: rgba(125,125,125,0.08); }
         .mode-btn.active { background: var(--bg-card); border-color: var(--accent); box-shadow: 0 4px 20px var(--accent-glow); color: var(--accent); }
 
-        input[type="date"] { width: 100%; padding: 16px; background: rgba(125,125,125,0.05); border: 1px solid rgba(125,125,125,0.2); border-radius: 12px; color: var(--text-main); font-family: 'Inter'; box-sizing: border-box; color-scheme: var(--date-scheme); font-size: 14px; }
+        /* Font size increased: 14px -> 16px */
+        input[type="date"] { width: 100%; padding: 18px; background: rgba(125,125,125,0.05); border: 1px solid rgba(125,125,125,0.2); border-radius: 12px; color: var(--text-main); font-family: 'Inter'; box-sizing: border-box; color-scheme: var(--date-scheme); font-size: 16px; }
         input[type="date"]:focus { outline: none; border-color: var(--accent); background: var(--bg-card); box-shadow: 0 0 15px var(--accent-glow); }
 
         .search-wrap { position: relative; }
-        input[type="text"] { width: 100%; padding: 16px; background: rgba(125,125,125,0.05); border: 1px solid rgba(125,125,125,0.2); border-radius: 12px; color: var(--text-main); font-family: 'Inter'; box-sizing: border-box; font-size: 14px; }
+        /* Font size increased: 14px -> 16px */
+        input[type="text"] { width: 100%; padding: 18px; background: rgba(125,125,125,0.05); border: 1px solid rgba(125,125,125,0.2); border-radius: 12px; color: var(--text-main); font-family: 'Inter'; box-sizing: border-box; font-size: 16px; }
         input[type="text"]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); background: var(--bg-card); }
-        .search-res { position: absolute; top: 115%; left: 0; right: 0; background: var(--bg-card); border: var(--border); border-radius: var(--radius-md); max-height: 300px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        .search-item { padding: 14px 18px; border-bottom: 1px solid rgba(125,125,125,0.05); cursor: pointer; font-size: 13px; color: var(--text-main); transition: 0.2s; }
+        .search-res { position: absolute; top: 115%; left: 0; right: 0; background: var(--bg-card); border: var(--border); border-radius: var(--radius-md); max-height: 350px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .search-item { padding: 16px 20px; border-bottom: 1px solid rgba(125,125,125,0.05); cursor: pointer; font-size: 15px; color: var(--text-main); transition: 0.2s; }
         .search-item b { color: var(--accent); }
-        .search-item:hover { background: rgba(125,125,125,0.1); padding-left: 24px; }
+        .search-item:hover { background: rgba(125,125,125,0.1); padding-left: 26px; }
 
         .btn-dl { 
-            width: 100%; padding: 20px; border: none; border-radius: 60px; background: rgba(125,125,125,0.1); 
-            color: var(--text-sub); font-weight: 800; font-size: 14px; cursor: not-allowed; margin-top: auto; 
+            width: 100%; padding: 22px; border: none; border-radius: 60px; background: rgba(125,125,125,0.1); 
+            color: var(--text-sub); font-weight: 800; font-size: 16px; cursor: not-allowed; margin-top: auto; 
             transition: 0.3s; letter-spacing: 1px; text-transform: uppercase; 
         }
         .btn-dl.ready { background: var(--accent); color: #000; cursor: pointer; box-shadow: 0 0 25px var(--accent-glow); }
@@ -191,7 +204,7 @@
         .drawer-overlay { position: absolute; top: var(--header-h); left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 150; display: none; backdrop-filter: blur(4px); cursor: pointer; transition: opacity 0.3s; }
         .drawer-overlay.active { display: block; }
         .drawer { 
-            position: absolute; top: var(--header-h); right: 0; bottom: 0; width: 680px; 
+            position: absolute; top: var(--header-h); right: 0; bottom: 0; width: 750px; 
             background: var(--bg-card); border-left: var(--border); z-index: 200; 
             transform: translateX(100%); transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); 
             display: flex; flex-direction: column; box-shadow: var(--shadow); 
@@ -199,7 +212,8 @@
         .drawer.open { transform: translateX(0); }
         
         .doc-nav { display: flex; background: var(--bg-panel); border-bottom: var(--border); padding: 0 30px; gap: 20px; }
-        .doc-tab { flex: 1; text-align: center; padding: 24px 0; font-size: 13px; font-weight: 700; color: var(--text-sub); cursor: pointer; border-bottom: 3px solid transparent; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* Font size increased: 13px -> 15px */
+        .doc-tab { flex: 1; text-align: center; padding: 26px 0; font-size: 15px; font-weight: 700; color: var(--text-sub); cursor: pointer; border-bottom: 4px solid transparent; transition: 0.2s; text-transform: uppercase; letter-spacing: 0.5px; }
         .doc-tab:hover { color: var(--text-main); }
         .doc-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
         
@@ -208,16 +222,20 @@
         .doc-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .doc-h1 { font-size: 28px; font-weight: 900; margin-bottom: 12px; color: var(--text-main); letter-spacing: -0.5px; }
-        .doc-sub { font-size: 15px; color: var(--text-sub); margin-bottom: 40px; border-left: 3px solid var(--accent); padding-left: 15px; line-height: 1.6; }
+        /* Font size increased: 28px -> 32px */
+        .doc-h1 { font-size: 32px; font-weight: 900; margin-bottom: 14px; color: var(--text-main); letter-spacing: -0.5px; }
+        /* Font size increased: 15px -> 16px */
+        .doc-sub { font-size: 16px; color: var(--text-sub); margin-bottom: 40px; border-left: 4px solid var(--accent); padding-left: 18px; line-height: 1.6; }
         
         table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 25px; border: var(--border); border-radius: 12px; overflow: hidden; }
-        th { text-align: left; padding: 18px; background: rgba(125,125,125,0.04); color: var(--accent); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; border-bottom: 1px solid rgba(125,125,125,0.1); }
-        td { padding: 16px; border-bottom: 1px solid rgba(125,125,125,0.05); color: var(--text-main); font-size: 13px; line-height: 1.6; }
+        /* Font size increased: 12px -> 14px */
+        th { text-align: left; padding: 20px; background: rgba(125,125,125,0.04); color: var(--accent); font-size: 14px; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; border-bottom: 1px solid rgba(125,125,125,0.1); }
+        /* Font size increased: 13px -> 15px */
+        td { padding: 18px; border-bottom: 1px solid rgba(125,125,125,0.05); color: var(--text-main); font-size: 15px; line-height: 1.6; }
         tr:last-child td { border-bottom: none; }
-        .code-tag { font-family: 'JetBrains Mono'; color: var(--accent); background: rgba(125,125,125,0.1); padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+        .code-tag { font-family: 'JetBrains Mono'; color: var(--accent); background: rgba(125,125,125,0.1); padding: 4px 8px; border-radius: 6px; font-size: 13px; font-weight: 600; }
         
-        .cite-block { background: rgba(125,125,125,0.03); border: var(--border); border-left: 4px solid var(--gold); padding: 25px; font-family: 'Georgia', serif; font-style: italic; color: var(--text-main); margin-bottom: 30px; line-height: 1.8; border-radius: 0 12px 12px 0; }
+        .cite-block { background: rgba(125,125,125,0.03); border: var(--border); border-left: 4px solid var(--gold); padding: 25px; font-family: 'Georgia', serif; font-style: italic; color: var(--text-main); margin-bottom: 30px; line-height: 1.8; border-radius: 0 12px 12px 0; font-size: 15px; }
         
         /* Marker Cluster Customization */
         .marker-cluster-small, .marker-cluster-medium, .marker-cluster-large { background-color: var(--accent-glow) !important; }
@@ -311,7 +329,7 @@
                     </div>
                     
                     <div class="status-card" id="status-card" style="margin-top:20px;">
-                        <div class="st-title" id="sel-status" style="font-size:12px; color:var(--text-sub); font-weight:700; text-transform:uppercase; margin-bottom:5px;">未选择站点</div>
+                        <div class="st-title" id="sel-status" style="font-size:13px; color:var(--text-sub); font-weight:700; text-transform:uppercase; margin-bottom:5px;">未选择站点</div>
                         <div class="st-val" id="st-name">点击地图上的点</div>
                         <div class="st-code" id="st-id">支持 Shift+框选区域</div>
                     </div>
@@ -337,7 +355,7 @@
                 </div>
 
                 <div style="margin-top:auto;">
-                    <div style="font-size:11px; color:var(--text-sub); text-align:center; margin-bottom:12px;">
+                    <div style="font-size:12px; color:var(--text-sub); text-align:center; margin-bottom:12px;">
                         🔗 链接直接请求 NOAA NCEI 官方 API<br>多站点将自动合并为单个 CSV
                     </div>
                     <button class="btn-dl" id="dl-btn" onclick="download()">下载数据 (CSV)</button>
@@ -358,7 +376,7 @@
                 <div class="doc-h1">GHCN-Hourly (GHCNh)</div>
                 <div class="doc-sub">Global Historical Climatology Network - Hourly. <br>API Dataset: <code>global-hourly</code>.</div>
                 
-                <h4 style="color:var(--text-main); margin-bottom:5px;">核心变量 (Variables)</h4>
+                <h4 style="color:var(--text-main); margin-bottom:5px; font-size:16px;">核心变量 (Variables)</h4>
                 <table>
                     <tr><th>代码</th><th>说明</th><th>解析示例</th></tr>
                     <tr><td class="code-tag">TMP</td><td>气温 (Temperature)</td><td>+0250,1 (25.0°C)</td></tr>
@@ -369,7 +387,7 @@
                     <tr><td class="code-tag">AA1</td><td>降水 (Precipitation)</td><td>01,0050 (1h/5.0mm)</td></tr>
                     <tr><td class="code-tag">GA1</td><td>云层覆盖 (Sky Cover)</td><td>08,1,+00600 (8分, 600m)</td></tr>
                 </table>
-                <p style="font-size:12px; color:var(--text-sub); margin-top:10px;">*注：Hourly 数据为定长字符串格式，需根据手册解析逗号分隔的字段。</p>
+                <p style="font-size:13px; color:var(--text-sub); margin-top:10px;">*注：Hourly 数据为定长字符串格式，需根据手册解析逗号分隔的字段。</p>
             </div>
 
             <div id="doc-daily" class="doc-section">
@@ -406,12 +424,12 @@
                 <div class="doc-h1">引用方式 (Citation)</div>
                 <div class="doc-sub">使用数据请遵循 NOAA NCEI 官方引用规范。</div>
                 
-                <h4 style="color:var(--text-main); margin-bottom:10px;">GHCN-Daily (Menne et al. 2012)</h4>
+                <h4 style="color:var(--text-main); margin-bottom:10px; font-size:16px;">GHCN-Daily (Menne et al. 2012)</h4>
                 <div class="cite-block">
                     Menne, M.J., I. Durre, R.S. Vose, B.E. Gleason, and T.G. Houston, 2012: An overview of the Global Historical Climatology Network-Daily Database. Journal of Atmospheric and Oceanic Technology, 29, 897-910, doi:10.1175/JTECH-D-11-00103.1.
                 </div>
                 
-                <h4 style="color:var(--text-main); margin-bottom:10px;">GHCN-Hourly (Menne et al. 2023)</h4>
+                <h4 style="color:var(--text-main); margin-bottom:10px; font-size:16px;">GHCN-Hourly (Menne et al. 2023)</h4>
                 <div class="cite-block">
                     Menne, Matthew J., et al. 2023. Global Historical Climatology Network-Hourly (GHCNh). NOAA National Centers for Environmental Information.
                 </div>
@@ -422,7 +440,7 @@
                 <div style="padding:40px; background:rgba(125,125,125,0.03); border-radius:24px; border:var(--border);">
                     <div style="font-family:'Orbitron'; font-size:32px; font-weight:900;">NCEI <span>GO</span></div>
                     
-                    <div style="font-size:13px; color:var(--text-main); margin-top:25px; line-height:1.8;">
+                    <div style="font-size:14px; color:var(--text-main); margin-top:25px; line-height:1.8;">
                         <p><strong>Global Historical Climatology Network (GHCN):</strong><br>
                         本站直连 NOAA 官方 GHCN 数据库，支持以下全尺度气象数据归档的一键下载：</p>
                         <ul style="margin:10px 0 20px 0; padding-left:20px; color:var(--text-sub);">
