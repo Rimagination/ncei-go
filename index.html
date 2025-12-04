@@ -105,14 +105,14 @@
         .ctrl-box { width: 440px; background: var(--bg-panel); border-left: var(--border); display: flex; flex-direction: column; z-index: 50; box-shadow: var(--shadow); backdrop-filter: var(--backdrop); }
         
         .ctrl-content { 
-            padding: 24px; /* Reduced from 40px */
+            padding: 24px; 
             overflow-y: auto; flex: 1; display: flex; flex-direction: column; 
-            gap: 18px; /* Reduced from 36px (Much tighter) */
+            gap: 18px; 
         }
 
         /* Titles: Big */
         .section-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-left: 4px solid var(--accent); padding-left: 10px; transition: border-color 0.3s; }
-        .h-cn { font-size: 16px; font-weight: 800; color: var(--text-main); } /* Prominent Title */
+        .h-cn { font-size: 16px; font-weight: 800; color: var(--text-main); } 
         .h-en { font-size: 10px; font-weight: 600; color: var(--text-sub); text-transform: uppercase; margin-left: 8px; }
 
         /* Content: Compact & Small */
@@ -126,8 +126,8 @@
         .st-code { font-family: 'JetBrains Mono'; font-size: 11px; color: var(--accent); background: rgba(125,125,125,0.1); padding: 4px 10px; border-radius: 4px; display: inline-block; }
 
         .batch-switch { display: flex; align-items: center; gap: 8px; background: rgba(125,125,125,0.05); padding: 6px 10px; border-radius: 8px; }
-        .switch-label { font-size: 11px; color: var(--text-main); font-weight: 600; cursor: pointer; }
-        .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
+        .switch-label { font-size: 11px; color: var(--text-main); font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .switch { position: relative; display: inline-block; width: 36px; height: 20px; flex-shrink: 0; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #666; transition: .4s; border-radius: 20px; }
         .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
@@ -275,7 +275,7 @@
                     <div class="section-h">
                         <div><span class="h-cn">1. 站点选择</span><span class="h-en">Selection</span></div>
                         <div class="batch-switch">
-                            <label class="switch-label" for="multi-check">批量多选</label>
+                            <label class="switch-label" for="multi-check">批量多选 <span style="font-size:9px; opacity:0.6; margin-left:2px;">(Shift+框选)</span></label>
                             <label class="switch"><input type="checkbox" id="multi-check" class="switch-input"><span class="slider"></span></label>
                         </div>
                     </div>
