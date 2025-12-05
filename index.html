@@ -145,7 +145,6 @@
         .btn-dl.ready:hover { transform: translateY(-2px); }
 
         /* === PERFECT GLOW SYSTEM === */
-        /* 1. Selected Marker Icon (DivIcon) */
         .custom-selected-pin { position: relative; }
         .custom-selected-pin .pin-img {
             position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
@@ -165,7 +164,6 @@
             animation: pulseWave 2s infinite ease-out; z-index: 1; margin-top: 15px;
         }
 
-        /* 2. Selected Cluster Icon */
         .marker-cluster-selected {
             background-color: var(--accent) !important; color: #000 !important;
             box-shadow: 0 0 0 4px var(--gold), 0 0 40px var(--accent) !important;
@@ -177,7 +175,6 @@
         @keyframes pulseWave { 0% { transform: translate(-50%,-50%) scale(0.2); opacity: 1; } 100% { transform: translate(-50%,-50%) scale(2.5); opacity: 0; } }
         @keyframes pulseCluster { 0% { box-shadow: 0 0 0 0px rgba(255,215,0, 0.8); } 70% { box-shadow: 0 0 0 20px rgba(255,215,0, 0); } 100% { box-shadow: 0 0 0 0px rgba(0,0,0,0); } }
 
-        /* Standard Cluster Styles */
         .marker-cluster-small, .marker-cluster-medium, .marker-cluster-large { background-color: var(--accent-glow) !important; }
         .marker-cluster div { background-color: var(--accent) !important; color: #000 !important; font-weight: 800; border-radius: 50%; }
 
@@ -391,7 +388,6 @@
         let selectedStations = new Set();
         let currentMode = 'daily';
 
-        // Custom Icons
         const defaultIcon = new L.Icon.Default();
         const selectedIcon = L.divIcon({
             className: 'custom-selected-pin',
@@ -452,7 +448,14 @@
             const arr = [];
             if(type === 'daily') {
                 for(let line of lines) {
-                    if(line.length > 20) arr.push({ id: line.substring(0,11).trim(), lat: parseFloat(line.substring(12,20)), lon: parseFloat(line.substring(21,30)), name: line.substring(41,71).trim() });
+                    if(line.length > 20) {
+                        const latStr = line.substring(12,20).trim();
+                        const lonStr = line.substring(21,30).trim();
+                        if(latStr && lonStr) {
+                            const lat = parseFloat(latStr), lon = parseFloat(lonStr);
+                            if(!isNaN(lat) && !isNaN(lon)) arr.push({ id: line.substring(0,11).trim(), lat: lat, lon: lon, name: line.substring(41,71).trim() });
+                        }
+                    }
                 }
                 db.daily = arr;
             } else {
@@ -460,7 +463,7 @@
                     const p = lines[i].split(',');
                     if(p.length > 7) {
                         const lat = parseFloat(p[6].replace(/"/g,'')), lon = parseFloat(p[7].replace(/"/g,''));
-                        if(!isNaN(lat)) arr.push({ id: p[0].replace(/"/g,'')+p[1].replace(/"/g,''), name: p[2].replace(/"/g,''), lat:lat, lon:lon });
+                        if(!isNaN(lat) && !isNaN(lon)) arr.push({ id: p[0].replace(/"/g,'')+p[1].replace(/"/g,''), name: p[2].replace(/"/g,''), lat:lat, lon:lon });
                     }
                 }
                 db.hourly = arr;
